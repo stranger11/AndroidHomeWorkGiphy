@@ -24,17 +24,32 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        getMemGifList()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = RetrofitClient.instance.getMemGifList()
+            withContext(Dispatchers.Main) {
+                with(binding.recyclerView) {
+                    layoutManager = GridLayoutManager(
+                        this@MainActivity,
+                        3,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
+                    @Suppress("UNCHECKED_CAST")
+                    adapter = GifAdapter(response.data?.map { it.images?.original } as List<Gif>) {
+                        showSharePopupDialog(it)
+                    }
+                    hasFixedSize()
+                }
+            }
+        }
         addToRecyclerViewAsGridLayoutManager()
-
-
     }
 
     private fun showSharePopupDialog(gif: Gif) {
@@ -60,40 +75,15 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun getMemGifList() {
-        recyclerView = findViewById(R.id.recycler_view)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = RetrofitClient.instance.getMemGifList()
-            withContext(Dispatchers.Main) {
-                with(recyclerView) {
-                    layoutManager = GridLayoutManager(
-                        this@MainActivity,
-                        3,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    )
-                    adapter = GifAdapter(response.data?.map { it.images?.original } as List<Gif>) {
-                        showSharePopupDialog(it)
-                    }
-                    hasFixedSize()
-                }
-            }
-        }
-    }
-
     private fun addToRecyclerViewAsGridLayoutManager() {
-        recyclerView = findViewById(R.id.recycler_view)
-        val searchName = findViewById<EditText>(R.id.search_text)
-        val searchButton = findViewById<ImageButton>(R.id.button_search)
+        val searchName = binding.searchText
         val builder = AlertDialog.Builder(this)
 
-        searchButton.setOnClickListener {
+        binding.buttonSearch.setOnClickListener {
             val searchGif = searchName.text.toString()
-            if (searchGif.isEmpty()) {
+            if (searchName.text.isEmpty()) {
                 with(builder) {
                     setTitle("dddd")
-                    //setIcon(R.drawable.attention)
                     setPositiveButton("Ok") { dialog, _ -> dialog.cancel() }
                     setCancelable(false)
                     create()
@@ -103,13 +93,14 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     val response = RetrofitClient.instance.getGifList(searchName = searchGif)
                     withContext(Dispatchers.Main) {
-                        with(recyclerView) {
+                        with(binding.recyclerView) {
                             layoutManager = GridLayoutManager(
                                 this@MainActivity,
                                 3,
                                 LinearLayoutManager.VERTICAL,
                                 false
                             )
+                            @Suppress("UNCHECKED_CAST")
                             adapter =
                                 GifAdapter(response.data?.map { it.images?.original }
                                         as List<Gif>) {
@@ -122,6 +113,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
