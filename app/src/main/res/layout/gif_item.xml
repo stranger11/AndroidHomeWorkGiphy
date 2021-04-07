@@ -4,12 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    app:cardCornerRadius="15dp">
+    app:cardCornerRadius="10dp">
 
     <ImageView
         android:id="@+id/gif"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
         android:adjustViewBounds="true"
         android:maxWidth="320dp"
         android:maxHeight="200dp"

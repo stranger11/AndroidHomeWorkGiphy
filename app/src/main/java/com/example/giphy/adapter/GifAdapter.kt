@@ -1,4 +1,4 @@
-package com.example.giphy
+package com.example.giphy.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.giphy.data.Gif
+import com.example.giphy.R
+import com.example.giphy.model.Gif
 
-class GifAdapter(private val gifList: List<Gif>, private val click: (Gif) -> Unit) :
+class GifAdapter(private val gifList: List<Gif>,
+                 private val click: (Gif) -> Unit) :
     RecyclerView.Adapter<GifAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -16,7 +18,9 @@ class GifAdapter(private val gifList: List<Gif>, private val click: (Gif) -> Uni
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.gif_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.gif_item,
+            parent,
+            false)
         return ViewHolder(view)
     }
 

@@ -1,6 +1,5 @@
-package com.example.giphy.data
+package com.example.giphy.model
 
-import android.provider.MediaStore
 import com.google.gson.annotations.SerializedName
 
 data class GifEntity (

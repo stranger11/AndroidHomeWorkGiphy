@@ -1,4 +1,4 @@
-package com.example.giphy.data
+package com.example.giphy.model
 
 import com.google.gson.annotations.SerializedName
 
